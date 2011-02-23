@@ -76,7 +76,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SocialNetworkAPIs\SocialInsight.csproj">
+    <ProjectReference Include="..\SocialInsight\SocialInsight.csproj">
       <Project>{AD04838B-6ABB-481D-99BE-650615F822FA}</Project>
       <Name>SocialInsight</Name>
     </ProjectReference>
