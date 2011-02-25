@@ -1,0 +1,60 @@
+[1mdiff --git a/src/SocialInsight.UnitTests/TwitterServiceTests.cs b/src/SocialInsight.UnitTests/TwitterServiceTests.cs[m
+[1mindex cd3ec36..b058a1d 100644[m
+[1m--- a/src/SocialInsight.UnitTests/TwitterServiceTests.cs[m
+[1m+++ b/src/SocialInsight.UnitTests/TwitterServiceTests.cs[m
+[36m@@ -32,6 +32,24 @@[m [mnamespace SocialNetworkAPIs.UnitTests[m
+         }[m
+ [m
+         [Test][m
+[32m+[m[32m        public void GetUserById()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);[m
+[32m+[m[32m            int userId = 5637652;[m
+[32m+[m[32m            var user = _twitter.GetUserById(userId);[m
+[32m+[m[32m            Assert.AreEqual(userId, user.Id);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        [Test][m
+[32m+[m[32m        public void GetUserByName()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);[m
+[32m+[m[32m            string name = "shanselman";[m
+[32m+[m[32m            var user = _twitter.GetuserByName(name);[m
+[32m+[m[32m            Assert.AreEqual(name, user.ScreenName);[m
+[32m+[m[32m        }[m
+[32m+[m[41m        [m
+[32m+[m[32m        [Test][m
+         public void LookupUsers()[m
+         {[m
+             _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);[m
+[1mdiff --git a/src/SocialInsight/OAuth/TwitterService.cs b/src/SocialInsight/OAuth/TwitterService.cs[m
+[1mindex e046a65..a1f395c 100644[m
+[1m--- a/src/SocialInsight/OAuth/TwitterService.cs[m
+[1m+++ b/src/SocialInsight/OAuth/TwitterService.cs[m
+[36m@@ -166,5 +166,25 @@[m [mnamespace Abilitics.SearchPoint.Engine.LinkedIn[m
+             _client.Token = accessToken;[m
+             _client.TokenSecret = secretToken;[m
+         }[m
+[32m+[m
+[32m+[m[32m        public TwitterUser GetUserById(int userId)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            var parameters = new Dictionary<string, string> {[m
+[32m+[m[32m                { "user_id",  userId.ToString() }[m
+[32m+[m[32m            };[m
+[32m+[m[32m            var xml = _client.APIWebRequest(HttpMethod.GET, "http://api.twitter.com/1/users/show.xml?user_id=" + userId, null);[m
+[32m+[m
+[32m+[m[32m            return BuildTwitterUserFromXml(xml.Root);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        public TwitterUser GetuserByName(string name)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            var parameters = new Dictionary<string, string> {[m
+[32m+[m[32m                { "screen_name",  name }[m
+[32m+[m[32m            };[m
+[32m+[m[32m            var xml = _client.APIWebRequest(HttpMethod.GET, "http://api.twitter.com/1/users/show.xml?screen_name=" + name, null);[m
+[32m+[m
+[32m+[m[32m            return BuildTwitterUserFromXml(xml.Root);[m
+[32m+[m[32m        }[m
+     }[m
+ }[m
+\ No newline at end of file[m
