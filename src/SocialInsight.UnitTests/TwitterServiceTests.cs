@@ -32,6 +32,24 @@ namespace SocialNetworkAPIs.UnitTests
         }
 
         [Test]
+        public void GetUserById()
+        {
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            int userId = 5637652;
+            var user = _twitter.GetUserById(userId);
+            Assert.AreEqual(userId, user.Id);
+        }
+
+        [Test]
+        public void GetUserByName()
+        {
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            string name = "shanselman";
+            var user = _twitter.GetuserByName(name);
+            Assert.AreEqual(name, user.ScreenName);
+        }
+        
+        [Test]
         public void LookupUsers()
         {
             _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);

@@ -16,6 +16,8 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
     {
         private OAuthClient _client;
 
+        private const string _baseurl = "http://api.twitter.com/1/";
+
         public TwitterService(string consumerKey, string consumerSecret)
         {
             _client = new OAuthClient(consumerKey, consumerSecret);
@@ -32,7 +34,7 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
             var parameters = new Dictionary<string, string> {
                 { "screen_name" , username }
             };
-            var xml = _client.APIWebRequest(HttpMethod.GET, "http://api.twitter.com/1/friends/ids.xml", parameters);
+            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "friends/ids.xml", parameters);
 
             var ids = new List<int>();
             foreach (var xmlElement in xml.Root.Elements("id"))
@@ -50,7 +52,7 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
             var parameters = new Dictionary<string, string> {
                 { "screen_name" , username }
             };
-            var xml = _client.APIWebRequest(HttpMethod.GET, "http://api.twitter.com/1/followers/ids.xml", parameters);
+            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "followers/ids.xml", parameters);
 
             var ids = new List<int>();
             foreach (var xmlElement in xml.Root.Elements("id"))
@@ -74,7 +76,7 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
             var parameters = new Dictionary<string, string> {
                 { "user_id",  encodedids}
             };
-            var xml = _client.APIWebRequest(HttpMethod.GET, "http://api.twitter.com/1/users/lookup.xml?user_id=" + encodedids, null);
+            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "users/lookup.xml?user_id=" + encodedids, null);
 
             var users = new List<TwitterUser>();
             foreach (var userXml in xml.Root.Elements("user"))
@@ -102,12 +104,12 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
 
         public void VerifyLogin()
         {
-            _client.APIWebRequest(HttpMethod.GET, "http://api.twitter.com/version/account/verify_credentials.xml", null);
+            _client.APIWebRequest(HttpMethod.GET, _baseurl + "account/verify_credentials.xml", null);
         }
 
         public void Retweet(int tweet)
         {
-            _client.APIWebRequest(HttpMethod.POST, "http://api.twitter.com/1/statuses/retweet/{0}.xml?trim_user=true".Fmt(tweet), null);
+            _client.APIWebRequest(HttpMethod.POST, _baseurl + "statuses/retweet/{0}.xml?trim_user=true".Fmt(tweet), null);
         }
 
         public string GetRequestToken()
@@ -128,7 +130,7 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
 
         public List<Tweet> GetHomeTimeline()
         {
-            var xml = _client.APIWebRequest(HttpMethod.GET, "http://api.twitter.com/1/statuses/home_timeline.xml", null);
+            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "statuses/home_timeline.xml", null);
 
             var tweets = new List<Tweet>();
             foreach (var xmlElement in xml.Root.Elements("status"))
@@ -149,7 +151,6 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
             tweet.Text = xml.GetSubElementValue("text");
             tweet.Source = xml.GetSubElementValue("source");
 
-
             return tweet;
         }
 
@@ -157,7 +158,7 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
         {
             string encodedMessage = UrlEx.UrlEncode(statusMessage);
             var parameters = new Dictionary<string, string> { { "status", encodedMessage } };
-            var xml = _client.APIWebRequest(HttpMethod.POST, "http://api.twitter.com/1/statuses/update.xml", parameters);
+            var xml = _client.APIWebRequest(HttpMethod.POST, _baseurl + "statuses/update.xml", parameters);
             Console.WriteLine(xml.ToString());
         }
 
@@ -165,6 +166,26 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
         {
             _client.Token = accessToken;
             _client.TokenSecret = secretToken;
+        }
+
+        public TwitterUser GetUserById(int userId)
+        {
+            var parameters = new Dictionary<string, string> {
+                { "user_id",  userId.ToString() }
+            };
+            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "users/show.xml?user_id=" + userId, null);
+
+            return BuildTwitterUserFromXml(xml.Root);
+        }
+
+        public TwitterUser GetuserByName(string name)
+        {
+            var parameters = new Dictionary<string, string> {
+                { "screen_name",  name }
+            };
+            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "users/show.xml?screen_name=" + name, null);
+
+            return BuildTwitterUserFromXml(xml.Root);
         }
     }
 }
