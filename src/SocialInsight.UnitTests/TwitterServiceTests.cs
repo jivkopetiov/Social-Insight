@@ -2,9 +2,8 @@
 using System.Configuration;
 using System.Linq;
 using NUnit.Framework;
-using SocialInsight;
 
-namespace SocialNetworkAPIs.UnitTests
+namespace SocialInsight.UnitTests
 {
     [TestFixture]
     public class TwitterServiceTests

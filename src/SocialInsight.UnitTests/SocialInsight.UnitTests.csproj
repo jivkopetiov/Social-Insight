@@ -8,8 +8,8 @@
     <ProjectGuid>{003CE819-E977-4F30-96B1-9F5B68EC4679}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SocialNetworkAPIs.UnitTests</RootNamespace>
-    <AssemblyName>SocialNetworkAPIs.UnitTests</AssemblyName>
+    <RootNamespace>SocialInsight.UnitTests</RootNamespace>
+    <AssemblyName>SocialInsight.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

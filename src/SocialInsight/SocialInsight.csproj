@@ -48,26 +48,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Facebook\FacebookService.cs" />
+    <Compile Include="Facebook\FacebookUser.cs" />
     <Compile Include="Infrastructure\Arg.cs" />
     <Compile Include="Infrastructure\CultureEx.cs" />
     <Compile Include="Infrastructure\UrlEx.cs" />
-    <Compile Include="OAuth\LinkedInPosition.cs" />
-    <Compile Include="OAuth\LinkedInProfile.cs" />
-    <Compile Include="OAuth\Tweet.cs" />
-    <Compile Include="OAuth\TwitterService.cs" />
+    <Compile Include="LinkedIn\LinkedInPosition.cs" />
+    <Compile Include="LinkedIn\LinkedInProfile.cs" />
+    <Compile Include="Twitter\Tweet.cs" />
+    <Compile Include="Twitter\TwitterService.cs" />
     <Compile Include="Infrastructure\HttpMethod.cs" />
     <Compile Include="Infrastructure\HttpUtility2.cs" />
-    <Compile Include="OAuth\LinkedInService.cs" />
-    <Compile Include="OAuth\OAuthClient.cs" />
-    <Compile Include="OAuth\SignatureTypes.cs" />
+    <Compile Include="LinkedIn\LinkedInService.cs" />
+    <Compile Include="Infrastructure\OAuth\OAuthClient.cs" />
+    <Compile Include="Infrastructure\OAuth\OAuthSignatureTypes.cs" />
     <Compile Include="Infrastructure\StringEx.cs" />
     <Compile Include="Infrastructure\WebExceptionEx.cs" />
     <Compile Include="Infrastructure\XDocumentEx.cs" />
     <Compile Include="Infrastructure\XElementEx.cs" />
-    <Compile Include="OAuth\TwitterTrend.cs" />
-    <Compile Include="OAuth\TwitterUser.cs" />
+    <Compile Include="Twitter\TwitterTrend.cs" />
+    <Compile Include="Twitter\TwitterUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

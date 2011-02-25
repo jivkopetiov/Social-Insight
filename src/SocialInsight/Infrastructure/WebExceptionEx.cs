@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.IO;
 
 namespace SocialInsight
 {
@@ -12,6 +13,22 @@ namespace SocialInsight
             if (response == null) return false;
 
             return response.StatusCode == statusCode;
+        }
+
+        public static string GetErrorMessage(WebException ex)
+        {
+            var response = ex.Response as HttpWebResponse;
+            if (response == null)
+                return null;
+
+            using (var stream = response.GetResponseStream())
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    string message = reader.ReadToEnd();
+                    return message;
+                }
+            }
         }
     }
 }

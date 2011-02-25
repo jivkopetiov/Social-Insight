@@ -73,7 +73,7 @@ namespace SocialInsight
             }
             catch (WebException ex)
             {
-                string message = GetErrorMessage(ex);
+                string message = WebExceptionEx.GetErrorMessage(ex);
                 if (message != null)
                     throw new InvalidOperationException(message, ex);
                 else
@@ -93,7 +93,7 @@ namespace SocialInsight
             }
             catch (WebException ex)
             {
-                string message = GetErrorMessage(ex);
+                string message = WebExceptionEx.GetErrorMessage(ex);
                 if (message != null)
                     throw new InvalidOperationException(message, ex);
                 else
@@ -505,7 +505,7 @@ namespace SocialInsight
             }
             catch (WebException ex)
             {
-                string message = GetErrorMessage(ex);
+                string message = WebExceptionEx.GetErrorMessage(ex);
                 if (message != null)
                     throw new InvalidOperationException(message, ex);
                 else
@@ -534,22 +534,6 @@ namespace SocialInsight
 
             Uri resultUri = new Uri(uri.AbsoluteUri + queryStringSeparator + result);
             return resultUri;
-        }
-
-        private string GetErrorMessage(WebException ex)
-        {
-            var response = ex.Response as HttpWebResponse;
-            if (response == null)
-                return null;
-
-            using (var stream = response.GetResponseStream())
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    string message = reader.ReadToEnd();
-                    return message;
-                }
-            }
         }
     }
 }

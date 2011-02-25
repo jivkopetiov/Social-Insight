@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace SocialInsight
 {
-    internal static class StringEx
+    public static class StringEx
     {
         private static readonly Regex smartFormatRegexPattern = new Regex(
             @"(\{+)([^\}]+)(\}+)", RegexOptions.Compiled);

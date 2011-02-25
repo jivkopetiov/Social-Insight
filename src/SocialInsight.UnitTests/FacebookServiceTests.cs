@@ -1,29 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using System.IO;
+using NUnit.Framework;
+using SocialInsight.Facebook;
 
-namespace SocialNetworkAPIs.UnitTests
+namespace SocialInsight.UnitTests
 {
+    [TestFixture]
     public class FacebookServiceTests
     {
+        private string _accessToken = "2227470867|2.YNURfN0E_SeJtinfUyk7nQ__.3600.1298678400-643618867|JxcVesWS-Sf0sPWTw9hvr2cO1dk";
+
+        private FacebookService _facebook;
+
+        [SetUp]
+        public void Setup()
+        {
+            _facebook = new FacebookService(_accessToken);
+        }
+
+        [Test]
+        public void GetFriends()
+        {
+            var friends = _facebook.GetFriends();
+            Assert.Greater(friends.Count, 0);
+        }
+
+        [Test]
         public void PostToFacebookWall()
         {
-            var request = (HttpWebRequest)WebRequest.Create("https://graph.facebook.com/123687284366775/feed");
-            string parameters = "access_token=123687284366775|981f1ab1d1babc6f9c052280-643618867|-w-DOrM-d5yHDAHRqt9EoVymYzY&message=Testing picture&picture=http://www.google.bg/logos/classicplus.png";
-            request.Method = "POST";
+            _facebook.PostToFacebookWall(123687284366775, Guid.NewGuid().ToString());
+        }
 
-            using (var requestStream = request.GetRequestStream())
-            {
-                var bytes = Encoding.UTF8.GetBytes(parameters);
-                requestStream.Write(bytes, 0, bytes.Length);
-            }
-
-            using (var response = request.GetResponse().GetResponseStream())
-            using (var reader = new StreamReader(response))
-                Console.WriteLine(reader.ReadToEnd());
+        [Test]
+        public void SearchPeople()
+        {
+            _facebook.SearchPeople("Ivan");
         }
     }
 }
