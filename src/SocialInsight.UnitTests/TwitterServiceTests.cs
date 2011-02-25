@@ -34,8 +34,9 @@ namespace SocialNetworkAPIs.UnitTests
         [Test]
         public void LookupUsers()
         {
-            var users = _twitter.GetUsersByIds(new[] { 5637652 }.ToList());
-            Assert.AreEqual(3, users.Count);
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            var users = _twitter.GetUsersByIds(new[] { 5637652, 10413302 }.ToList());
+            Assert.AreEqual(2, users.Count);
         }
 
         [Test]

@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
 using Abilitics.SearchPoint.Engine.Infrastructure;
+using SocialNetworkAPIs.Infrastructure;
 
 namespace Abilitics.SearchPoint.Engine.OAuth
 {
@@ -87,7 +88,7 @@ namespace Abilitics.SearchPoint.Engine.OAuth
             var webRequest = BuildRequest(method, url);
 
             string authHeader = string.Format(@"OAuth oauth_nonce=""{0}"", oauth_signature_method=""HMAC-SHA1"", oauth_timestamp=""{1}"", oauth_consumer_key=""{2}"", oauth_token=""{3}"",oauth_signature=""{4}"", oauth_version=""1.0""",
-                nonce, timeStamp, _consumerKey, Token, HttpUtility2.UrlEncode(signature));
+                nonce, timeStamp, _consumerKey, Token, UrlEx.UrlEncode(signature));
 
             webRequest.Headers.Add("Authorization", authHeader);
 
@@ -193,7 +194,7 @@ namespace Abilitics.SearchPoint.Engine.OAuth
                             postData += "&";
                         }
                         qs[key] = HttpUtility2.UrlDecode(qs[key]);
-                        qs[key] = UrlEncode(qs[key]);
+                        qs[key] = UrlEx.UrlEncode(qs[key]);
                         postData += key + "=" + qs[key];
 
                     }
@@ -225,7 +226,7 @@ namespace Abilitics.SearchPoint.Engine.OAuth
                 null,
                 out querystring);
 
-            querystring += string.Format("&{0}={1}", _signatureIdentifier, HttpUtility2.UrlEncode(sig));
+            querystring += string.Format("&{0}={1}", _signatureIdentifier, UrlEx.UrlEncode(sig));
 
             if (method == HttpMethod.POST)
             {
@@ -315,25 +316,6 @@ namespace Abilitics.SearchPoint.Engine.OAuth
             return result;
         }
 
-        private string UrlEncode(string input)
-        {
-            var result = new StringBuilder();
-
-            foreach (char symbol in input)
-            {
-                if (_unreservedChars.IndexOf(symbol) != -1)
-                {
-                    result.Append(symbol);
-                }
-                else
-                {
-                    result.Append('%' + String.Format("{0:X2}", (int)symbol));
-                }
-            }
-
-            return result.ToString();
-        }
-
         private string NormalizeRequestParameters(IList<QueryParameter> parameters)
         {
             var builder = new StringBuilder();
@@ -383,7 +365,7 @@ namespace Abilitics.SearchPoint.Engine.OAuth
             }
 
             if (type == RequestType.RequestToken && CallbackUrl != null)
-                parameters.Add(new QueryParameter(_callbackIdentifier, UrlEncode(CallbackUrl)));
+                parameters.Add(new QueryParameter(_callbackIdentifier, UrlEx.UrlEncode(CallbackUrl)));
 
             if (!string.IsNullOrEmpty(token))
                 parameters.Add(new QueryParameter(_tokenIdentifier, token));
@@ -401,7 +383,7 @@ namespace Abilitics.SearchPoint.Engine.OAuth
             normalizedUrl += url.AbsolutePath;
             normalizedRequestParameters = NormalizeRequestParameters(parameters);
 
-            string result = string.Format("{0}&{1}&{2}", httpMethod.ToString(), UrlEncode(normalizedUrl), UrlEncode(normalizedRequestParameters));
+            string result = string.Format("{0}&{1}&{2}", httpMethod.ToString(), UrlEx.UrlEncode(normalizedUrl), UrlEx.UrlEncode(normalizedRequestParameters));
             return result;
         }
 
@@ -419,7 +401,7 @@ namespace Abilitics.SearchPoint.Engine.OAuth
                     string signatureBase = GenerateSignatureBase(
                         url, consumerKey, token, tokenSecret, httpMethod, timeStamp, nonce, HMACSHA1SignatureType, type, out normalizedUrl, additionalParameters, out normalizedRequestParameters);
                     var hmacsha1 = new HMACSHA1();
-                    hmacsha1.Key = Encoding.ASCII.GetBytes(string.Format("{0}&{1}", UrlEncode(consumerSecret), string.IsNullOrEmpty(tokenSecret) ? "" : UrlEncode(tokenSecret)));
+                    hmacsha1.Key = Encoding.ASCII.GetBytes(string.Format("{0}&{1}", UrlEx.UrlEncode(consumerSecret), string.IsNullOrEmpty(tokenSecret) ? "" : UrlEx.UrlEncode(tokenSecret)));
                     return ComputeHash(hmacsha1, signatureBase);
                 case SignatureTypes.PLAINTEXT:
                 case SignatureTypes.RSASHA1:

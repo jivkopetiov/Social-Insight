@@ -8,6 +8,7 @@ using System.Net;
 using System.IO;
 using SocialNetworkAPIs;
 using SocialNetworkAPIs.OAuth;
+using SocialNetworkAPIs.Infrastructure;
 
 namespace Abilitics.SearchPoint.Engine.LinkedIn
 {
@@ -68,8 +69,12 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
         public List<TwitterUser> GetUsersByIds(List<int> ids)
         {
             string userIds = ids.JoinStrings(",");
+            string encodedids = UrlEx.UrlEncode(userIds);
 
-            var xml = _client.APIWebRequest(HttpMethod.GET, "http://api.twitter.com/1/users/lookup.xml?user_id=" + userIds, null);
+            var parameters = new Dictionary<string, string> {
+                { "user_id",  encodedids}
+            };
+            var xml = _client.APIWebRequest(HttpMethod.GET, "http://api.twitter.com/1/users/lookup.xml?user_id=" + encodedids, null);
 
             var users = new List<TwitterUser>();
             foreach (var userXml in xml.Root.Elements("user"))
@@ -150,7 +155,7 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
 
         public void UpdateStatus(string statusMessage)
         {
-            string encodedMessage = HttpUtility2.UrlEncode(statusMessage);
+            string encodedMessage = UrlEx.UrlEncode(statusMessage);
             var parameters = new Dictionary<string, string> { { "status", encodedMessage } };
             var xml = _client.APIWebRequest(HttpMethod.POST, "http://api.twitter.com/1/statuses/update.xml", parameters);
             Console.WriteLine(xml.ToString());

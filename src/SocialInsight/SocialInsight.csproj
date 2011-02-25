@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\CultureEx.cs" />
+    <Compile Include="Infrastructure\UrlEx.cs" />
     <Compile Include="OAuth\LinkedInPosition.cs" />
     <Compile Include="OAuth\LinkedInProfile.cs" />
     <Compile Include="OAuth\Tweet.cs" />
