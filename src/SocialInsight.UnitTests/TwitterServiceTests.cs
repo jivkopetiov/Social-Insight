@@ -33,6 +33,14 @@ namespace SocialNetworkAPIs.UnitTests
         }
 
         [Test]
+        public void GetMentions()
+        {
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            var tweets = _twitter.GetMentions();
+            Assert.Greater(tweets.Count, 0);
+        }
+
+        [Test]
         public void GetRequestTokenTest()
         {
             string token = _twitter.GetRequestToken();

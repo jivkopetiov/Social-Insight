@@ -143,8 +143,25 @@ namespace SocialInsight
 
         public List<Tweet> GetUserTimelineByName(string username, int page = 1, int count = 20)
         {
+            Arg.ThrowIfNonPositive(page, "page");
+            Arg.ThrowIfOutOfRange(count, "count", 1, 200);
+
             var xml = _client.APIWebRequest(HttpMethod.GET,
                 _baseurl + "statuses/user_timeline.xml?screen_name={0}&page={1}&count={2}".Fmt(username, page, count), null);
+
+            var tweets = xml.Root.Elements("status")
+                                 .Select(s => XmlToTweet(s))
+                                 .ToList();
+            return tweets;
+        }
+
+        public List<Tweet> GetMentions(int page = 1, int count = 20)
+        {
+            Arg.ThrowIfNonPositive(page, "page");
+            Arg.ThrowIfOutOfRange(count, "count", 1, 200);
+
+            var xml = _client.APIWebRequest(HttpMethod.GET,
+                _baseurl + "statuses/mentions.xml?page={0}&count={1}".Fmt(page, count), null);
 
             var tweets = xml.Root.Elements("status")
                                  .Select(s => XmlToTweet(s))
