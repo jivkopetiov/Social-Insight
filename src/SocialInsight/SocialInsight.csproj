@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\Arg.cs" />
     <Compile Include="Infrastructure\CultureEx.cs" />
     <Compile Include="Infrastructure\UrlEx.cs" />
     <Compile Include="OAuth\LinkedInPosition.cs" />

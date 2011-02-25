@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Abilitics.SearchPoint.Engine.LinkedIn
+namespace SocialInsight
 {
     public class LinkedInPosition
     {

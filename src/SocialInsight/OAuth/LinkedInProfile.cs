@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Abilitics.SearchPoint.Engine.LinkedIn
+namespace SocialInsight
 {
     public class LinkedInProfile
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Configuration;
 using System.Linq;
-using Abilitics.SearchPoint.Engine.LinkedIn;
 using NUnit.Framework;
+using SocialInsight;
 
 namespace SocialNetworkAPIs.UnitTests
 {
@@ -72,6 +72,14 @@ namespace SocialNetworkAPIs.UnitTests
             _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
             var followers = _twitter.GetFollowers(_username);
             Assert.Greater(followers.Count, 0);
+        }
+
+        [Test]
+        public void SearchUser()
+        {
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            var users = _twitter.SearchForUsers("Scott");
+            Assert.Greater(users.Count, 0);
         }
 
         [Test]

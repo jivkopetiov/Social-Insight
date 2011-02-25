@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace SocialNetworkAPIs.Infrastructure
+namespace SocialInsight
 {
     public static class UrlEx
     {

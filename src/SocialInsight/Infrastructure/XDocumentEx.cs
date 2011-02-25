@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Abilitics.SearchPoint.Engine.Infrastructure
+namespace SocialInsight
 {
     internal static class XDocumentEx
     {

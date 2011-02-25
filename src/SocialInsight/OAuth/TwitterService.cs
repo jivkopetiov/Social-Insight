@@ -1,16 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Linq;
-using Abilitics.SearchPoint.Engine.Infrastructure;
-using Abilitics.SearchPoint.Engine.OAuth;
-using System.Net;
-using System.IO;
-using SocialNetworkAPIs;
-using SocialNetworkAPIs.OAuth;
-using SocialNetworkAPIs.Infrastructure;
 
-namespace Abilitics.SearchPoint.Engine.LinkedIn
+namespace SocialInsight
 {
     public class TwitterService
     {
@@ -186,6 +178,25 @@ namespace Abilitics.SearchPoint.Engine.LinkedIn
             var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "users/show.xml?screen_name=" + name, null);
 
             return BuildTwitterUserFromXml(xml.Root);
+        }
+
+        public List<TwitterUser> SearchForUsers(string searchQuery, int page = 1, int count = 20)
+        {
+            Arg.ThrowIfNonPositive(page, "page");
+            Arg.ThrowIfOutOfRange(count, "count", 1, 20);
+
+            searchQuery = UrlEx.UrlEncode(searchQuery);
+
+            var parameters = new Dictionary<string, string> {
+                { "q",  searchQuery }
+            };
+            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "users/search.xml?q=" + searchQuery, null);
+
+            var users = new List<TwitterUser>();
+            foreach (var userXml in xml.Root.Elements("user"))
+                users.Add(BuildTwitterUserFromXml(userXml));
+
+            return users;
         }
     }
 }

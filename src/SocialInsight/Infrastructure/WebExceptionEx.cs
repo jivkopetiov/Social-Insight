@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Abilitics.SearchPoint.Engine.Infrastructure
+namespace SocialInsight
 {
     internal static class WebExceptionEx
     {

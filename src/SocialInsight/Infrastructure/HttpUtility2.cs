@@ -40,7 +40,7 @@ using System.Text;
 using System.Collections.Generic;
 #endif
 
-namespace Abilitics.SearchPoint.Engine.Infrastructure
+namespace SocialInsight
 {
 
     // CAS - no InheritanceDemand here as the class is sealed

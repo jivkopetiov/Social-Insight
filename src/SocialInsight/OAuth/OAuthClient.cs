@@ -6,10 +6,8 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
-using Abilitics.SearchPoint.Engine.Infrastructure;
-using SocialNetworkAPIs.Infrastructure;
 
-namespace Abilitics.SearchPoint.Engine.OAuth
+namespace SocialInsight
 {
     public class OAuthClient
     {

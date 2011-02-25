@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using Abilitics.SearchPoint.Engine.Infrastructure;
-using Abilitics.SearchPoint.Engine.OAuth;
 
-namespace Abilitics.SearchPoint.Engine.LinkedIn
+namespace SocialInsight
 {
     public class LinkedInService
     {
