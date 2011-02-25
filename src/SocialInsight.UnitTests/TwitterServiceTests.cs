@@ -1,7 +1,8 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
+using System.Linq;
 using Abilitics.SearchPoint.Engine.LinkedIn;
 using NUnit.Framework;
-using System;
 
 namespace SocialNetworkAPIs.UnitTests
 {
@@ -11,7 +12,6 @@ namespace SocialNetworkAPIs.UnitTests
         private TwitterService _twitter;
 
         private static string _lastAccessToken = "255203773-DdDAX66l4Pyrm81XoDWsWhvvBbb94udo0eTtjmWb";
-
         private static string _lastAccessTokenSecret = "dIgoOsxVwSmpK0Ku9PJSPU6GZusml1nD8Wbo1Z5AZfM";
 
         private string _username = "jivkopetiov2";
@@ -27,28 +27,40 @@ namespace SocialNetworkAPIs.UnitTests
         [Test]
         public void GetRequestTokenTest()
         {
-            _twitter.GetRequestToken();
+            string token = _twitter.GetRequestToken();
+            Assert.IsNotNullOrEmpty(token);
+        }
+
+        [Test]
+        public void LookupUsers()
+        {
+            var users = _twitter.GetUsersByIds(new[] { 5637652 }.ToList());
+            Assert.AreEqual(3, users.Count);
         }
 
         [Test]
         public void GetFriends()
         {
             _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
-            _twitter.GetFriends(_username);
+            var friends = _twitter.GetFriends(_username);
+
+            Assert.Greater(friends.Count, 0);
         }
 
         [Test]
         public void GetFollowers()
         {
             _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
-            _twitter.GetFollowers(_username);
+            var followers = _twitter.GetFollowers(_username);
+            Assert.Greater(followers.Count, 0);
         }
 
         [Test]
         public void GetHomeTimeline()
         {
             _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
-            _twitter.GetHomeTimeline();
+            var timeline = _twitter.GetHomeTimeline();
+            Assert.Greater(timeline.Count, 0);
         }
 
         [Test]
