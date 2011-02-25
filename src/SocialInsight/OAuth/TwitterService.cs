@@ -78,9 +78,13 @@ namespace SocialInsight
             _client.APIWebRequest(HttpMethod.GET, _baseurl + "account/verify_credentials.xml", null);
         }
 
-        public void Retweet(int tweet)
+        public void Retweet(long tweet, bool trimUser = true)
         {
-            _client.APIWebRequest(HttpMethod.POST, _baseurl + "statuses/retweet/{0}.xml?trim_user=true".Fmt(tweet), null);
+            string url = _baseurl + "statuses/retweet/{0}.xml".Fmt(tweet);
+            if (trimUser)
+                url += "?trim_user=true";
+
+            _client.APIWebRequest(HttpMethod.POST, url, null);
         }
 
         public string GetRequestToken()
@@ -126,7 +130,6 @@ namespace SocialInsight
             string encodedMessage = UrlEx.UrlEncode(statusMessage);
             var parameters = new Dictionary<string, string> { { "status", encodedMessage } };
             var xml = _client.APIWebRequest(HttpMethod.POST, _baseurl + "statuses/update.xml", parameters);
-            Console.WriteLine(xml.ToString());
         }
 
         public void SetAccessToken(string accessToken, string secretToken)

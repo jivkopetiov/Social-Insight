@@ -66,6 +66,13 @@ namespace SocialNetworkAPIs.UnitTests
         }
 
         [Test]
+        public void Retweet()
+        {
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            _twitter.Retweet(41178005787246592);
+        }
+
+        [Test]
         public void GetUserByName()
         {
             _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
