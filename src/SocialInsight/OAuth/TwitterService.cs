@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace SocialInsight
 {
@@ -27,7 +29,7 @@ namespace SocialInsight
             var parameters = new Dictionary<string, string> {
                 { "screen_name" , username }
             };
-            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "friends/ids.xml", parameters);
+            var xml = _client.APIWebRequestXml(HttpMethod.GET, _baseurl + "friends/ids.xml", parameters);
 
             var ids = new List<int>();
             foreach (var xmlElement in xml.Root.Elements("id"))
@@ -45,7 +47,7 @@ namespace SocialInsight
             var parameters = new Dictionary<string, string> {
                 { "screen_name" , username }
             };
-            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "followers/ids.xml", parameters);
+            var xml = _client.APIWebRequestXml(HttpMethod.GET, _baseurl + "followers/ids.xml", parameters);
 
             var ids = new List<int>();
             foreach (var xmlElement in xml.Root.Elements("id"))
@@ -65,7 +67,7 @@ namespace SocialInsight
         {
             string userIds = ids.JoinStrings(",");
             string encodedids = UrlEx.UrlEncode(userIds);
-            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "users/lookup.xml?user_id=" + encodedids, null);
+            var xml = _client.APIWebRequestXml(HttpMethod.GET, _baseurl + "users/lookup.xml?user_id=" + encodedids, null);
 
             var users = xml.Root.Elements("user")
                            .Select(x => XmlToUser(x))
@@ -75,7 +77,7 @@ namespace SocialInsight
 
         public void VerifyLogin()
         {
-            _client.APIWebRequest(HttpMethod.GET, _baseurl + "account/verify_credentials.xml", null);
+            _client.APIWebRequestXml(HttpMethod.GET, _baseurl + "account/verify_credentials.xml", null);
         }
 
         public void Retweet(long tweet, bool trimUser = true)
@@ -84,7 +86,7 @@ namespace SocialInsight
             if (trimUser)
                 url += "?trim_user=true";
 
-            _client.APIWebRequest(HttpMethod.POST, url, null);
+            _client.APIWebRequestXml(HttpMethod.POST, url, null);
         }
 
         public string GetRequestToken()
@@ -105,7 +107,7 @@ namespace SocialInsight
 
         public List<Tweet> GetHomeTimeline()
         {
-            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "statuses/home_timeline.xml", null);
+            var xml = _client.APIWebRequestXml(HttpMethod.GET, _baseurl + "statuses/home_timeline.xml", null);
 
             var tweets = new List<Tweet>();
             foreach (var xmlElement in xml.Root.Elements("status"))
@@ -119,7 +121,7 @@ namespace SocialInsight
 
         public Tweet GetTweetById(long id)
         {
-            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "statuses/show/{0}.xml".Fmt(id), null);
+            var xml = _client.APIWebRequestXml(HttpMethod.GET, _baseurl + "statuses/show/{0}.xml".Fmt(id), null);
 
             var tweet = XmlToTweet(xml.Root);
             return tweet;
@@ -129,7 +131,7 @@ namespace SocialInsight
         {
             string encodedMessage = UrlEx.UrlEncode(statusMessage);
             var parameters = new Dictionary<string, string> { { "status", encodedMessage } };
-            var xml = _client.APIWebRequest(HttpMethod.POST, _baseurl + "statuses/update.xml", parameters);
+            var xml = _client.APIWebRequestXml(HttpMethod.POST, _baseurl + "statuses/update.xml", parameters);
         }
 
         public void SetAccessToken(string accessToken, string secretToken)
@@ -140,14 +142,14 @@ namespace SocialInsight
 
         public TwitterUser GetUserById(int userId)
         {
-            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "users/show.xml?user_id=" + userId, null);
+            var xml = _client.APIWebRequestXml(HttpMethod.GET, _baseurl + "users/show.xml?user_id=" + userId, null);
 
             return XmlToUser(xml.Root);
         }
 
         public TwitterUser GetuserByName(string name)
         {
-            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "users/show.xml?screen_name=" + name, null);
+            var xml = _client.APIWebRequestXml(HttpMethod.GET, _baseurl + "users/show.xml?screen_name=" + name, null);
 
             return XmlToUser(xml.Root);
         }
@@ -157,7 +159,7 @@ namespace SocialInsight
             Arg.ThrowIfNonPositive(page, "page");
             Arg.ThrowIfOutOfRange(count, "count", 1, 200);
 
-            var xml = _client.APIWebRequest(HttpMethod.GET,
+            var xml = _client.APIWebRequestXml(HttpMethod.GET,
                 _baseurl + "statuses/user_timeline.xml?screen_name={0}&page={1}&count={2}".Fmt(username, page, count), null);
 
             var tweets = xml.Root.Elements("status")
@@ -171,7 +173,7 @@ namespace SocialInsight
             Arg.ThrowIfNonPositive(page, "page");
             Arg.ThrowIfOutOfRange(count, "count", 1, 200);
 
-            var xml = _client.APIWebRequest(HttpMethod.GET,
+            var xml = _client.APIWebRequestXml(HttpMethod.GET,
                 _baseurl + "statuses/mentions.xml?page={0}&count={1}".Fmt(page, count), null);
 
             var tweets = xml.Root.Elements("status")
@@ -186,12 +188,60 @@ namespace SocialInsight
             Arg.ThrowIfOutOfRange(count, "count", 1, 20);
 
             searchQuery = UrlEx.UrlEncode(searchQuery);
-            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "users/search.xml?q=" + searchQuery, null);
+            var xml = _client.APIWebRequestXml(HttpMethod.GET, _baseurl + "users/search.xml?q=" + searchQuery, null);
 
             var users = xml.Root.Elements("user")
                                 .Select(u => XmlToUser(u))
                                 .ToList();
             return users;
+        }
+
+        public List<TwitterTrend> GetCurrentTrends()
+        {
+            string json = _client.APIWebRequestJson(HttpMethod.GET, _baseurl + "trends.json", null);
+            File.WriteAllText(@"D:\do.test.xml", json);
+            var mainContainer = JObject.Parse(json);
+
+            var trends = new List<TwitterTrend>();
+            foreach (var jsonItem in mainContainer["trends"].Children())
+            {
+                var trend = new TwitterTrend();
+
+                string name = jsonItem["name"].ToString();
+                string url = jsonItem["url"].ToString();
+                name = name.Substring(1, name.Length - 2);
+                url = url.Substring(1, url.Length - 2);
+                url = HttpUtility2.UrlDecode(url);
+
+                trend.Name = name;
+                trend.Url = new Uri(url);
+
+                trends.Add(trend);
+            }
+
+            return trends;
+        }
+
+        public List<Tweet> Search(string searchQuery, int page = 1, int count = 20)
+        {
+            var json = _client.APIWebRequestJson(HttpMethod.GET, "http://search.twitter.com/search.json?q={0}&page={1}&rpp={2}".Fmt(searchQuery, page, count), null);
+
+            var root = JObject.Parse(json);
+            var tweets = new List<Tweet>();
+            foreach (var result in root["results"].Children())
+            {
+                var tweet = new Tweet();
+                tweet.Id = result["id"].Value<long>();
+                tweet.Date = DateTime.ParseExact(result["created_at"].Value<string>(), "ddd, dd MMM yyyy HH:mm:ss zzzz", CultureEx.Invariant);
+                tweet.Source = result["source"].Value<string>();
+                tweet.Text = result["text"].Value<string>();
+                tweet.Language = result["iso_language_code"].Value<string>();
+                tweet.UserName = result["from_user"].Value<string>();
+                tweet.UserImage = new Uri(result["profile_image_url"].Value<string>());
+                tweets.Add(tweet);
+            }
+
+            return tweets;
         }
 
         private static TwitterUser XmlToUser(XElement xml)

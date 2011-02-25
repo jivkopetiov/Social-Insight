@@ -60,7 +60,48 @@ namespace SocialInsight
             _consumerSecret = consumerSecret;
         }
 
-        public XDocument APIWebRequest(HttpMethod method, string url, Dictionary<string, string> parameters)
+        public string APIWebRequestJson(HttpMethod method, string url, Dictionary<string, string> parameters)
+        {
+            var webRequest = ApiRequestBase(method, url, parameters);
+
+            try
+            {
+                using (var response = webRequest.GetResponse())
+                using (var stream = response.GetResponseStream())
+                using (var reader = new StreamReader(stream))
+                    return reader.ReadToEnd();
+            }
+            catch (WebException ex)
+            {
+                string message = GetErrorMessage(ex);
+                if (message != null)
+                    throw new InvalidOperationException(message, ex);
+                else
+                    throw;
+            }
+        }
+
+        public XDocument APIWebRequestXml(HttpMethod method, string url, Dictionary<string, string> parameters)
+        {
+            var webRequest = ApiRequestBase(method, url, parameters);
+
+            try
+            {
+                using (var response = webRequest.GetResponse())
+                using (var stream = response.GetResponseStream())
+                    return XDocument.Load(stream);
+            }
+            catch (WebException ex)
+            {
+                string message = GetErrorMessage(ex);
+                if (message != null)
+                    throw new InvalidOperationException(message, ex);
+                else
+                    throw;
+            }
+        }
+
+        private HttpWebRequest ApiRequestBase(HttpMethod method, string url, Dictionary<string, string> parameters)
         {
             Uri uri = new Uri(url);
             string nonce = GenerateNonce();
@@ -92,21 +133,7 @@ namespace SocialInsight
 
             if (method == HttpMethod.POST)
                 AppendPostDataToBody(parameters, webRequest);
-
-            try
-            {
-                using (var response = webRequest.GetResponse())
-                using (var stream = response.GetResponseStream())
-                    return XDocument.Load(stream);
-            }
-            catch (WebException ex)
-            {
-                string message = GetErrorMessage(ex);
-                if (message != null)
-                    throw new InvalidOperationException(message, ex);
-                else
-                    throw;
-            }
+            return webRequest;
         }
 
         private static void AppendPostDataToBody(Dictionary<string, string> parameters, HttpWebRequest webRequest)

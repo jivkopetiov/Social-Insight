@@ -129,5 +129,21 @@ namespace SocialNetworkAPIs.UnitTests
             string status = Guid.NewGuid().ToString() + @"тест &!@#`~_+=-,.<>?;'\/|$%^&*() " + Guid.NewGuid().ToString();
             _twitter.UpdateStatus(status);
         }
+
+        [Test]
+        public void GetTrends()
+        {
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            var trends = _twitter.GetCurrentTrends();
+            Assert.Greater(trends.Count, 0);
+        }
+
+        [Test]
+        public void Search()
+        {
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            var tweets = _twitter.Search("Inception");
+            Assert.Greater(tweets.Count, 0);
+        }
     }
 }

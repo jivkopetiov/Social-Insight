@@ -48,7 +48,7 @@ namespace SocialInsight
             int start = page * count;
 
             string fields = "id,first-name,last-name,picture-url,headline,location,industry,distance";
-            var xml = _client.APIWebRequest(HttpMethod.GET,
+            var xml = _client.APIWebRequestXml(HttpMethod.GET,
                 string.Format("http://api.linkedin.com/v1/people-search:(people:({0}),num-results)?keywords={1}&start={2}&count={3}",
                 fields, keyword, start, count), null);
 
@@ -61,7 +61,7 @@ namespace SocialInsight
 
         public LinkedInProfile GetProfile(string id)
         {
-            var xml = _client.APIWebRequest(HttpMethod.GET,
+            var xml = _client.APIWebRequestXml(HttpMethod.GET,
                 string.Format("http://api.linkedin.com/v1/people/id={0}:({1})", id, ProfileFields()), null);
 
             var person = LinkedInProfileFromXml(xml.Root);
@@ -76,7 +76,7 @@ namespace SocialInsight
 
         public LinkedInProfile GetMyProfile()
         {
-            var xml = _client.APIWebRequest(HttpMethod.GET,
+            var xml = _client.APIWebRequestXml(HttpMethod.GET,
                 string.Format("http://api.linkedin.com/v1/people/~:({0})", ProfileFields()), null);
 
             var person = LinkedInProfileFromXml(xml.Root);
@@ -95,7 +95,7 @@ namespace SocialInsight
 
             int start = page - 1;
 
-            var xml = _client.APIWebRequest(HttpMethod.GET,
+            var xml = _client.APIWebRequestXml(HttpMethod.GET,
                 string.Format("http://api.linkedin.com/v1/people/~/connections:({0})?start={1}&count={2}",
                 fields, start, count), null);
 
