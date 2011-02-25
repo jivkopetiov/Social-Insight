@@ -25,6 +25,14 @@ namespace SocialNetworkAPIs.UnitTests
         }
 
         [Test]
+        public void GetUserTimeLine()
+        {
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            var tweets = _twitter.GetUserTimelineByName("shanselman");
+            Assert.Greater(tweets.Count, 0);
+        }
+
+        [Test]
         public void GetRequestTokenTest()
         {
             string token = _twitter.GetRequestToken();
@@ -48,7 +56,7 @@ namespace SocialNetworkAPIs.UnitTests
             var user = _twitter.GetuserByName(name);
             Assert.AreEqual(name, user.ScreenName);
         }
-        
+
         [Test]
         public void LookupUsers()
         {
