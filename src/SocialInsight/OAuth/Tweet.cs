@@ -9,7 +9,7 @@ namespace SocialInsight
     {
         public DateTime Date { get; set; }
 
-        public string Id { get; set; }
+        public long Id { get; set; }
 
         public string Text { get; set; }
 

@@ -57,6 +57,15 @@ namespace SocialNetworkAPIs.UnitTests
         }
 
         [Test]
+        public void GetTweetById()
+        {
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            long tweetId = 41178005787246592;
+            var tweet = _twitter.GetTweetById(tweetId);
+            Assert.AreEqual(tweetId, tweet.Id);
+        }
+
+        [Test]
         public void GetUserByName()
         {
             _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);

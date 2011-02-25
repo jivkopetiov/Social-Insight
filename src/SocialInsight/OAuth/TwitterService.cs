@@ -113,6 +113,14 @@ namespace SocialInsight
             return tweets;
         }
 
+        public Tweet GetTweetById(long id)
+        {
+            var xml = _client.APIWebRequest(HttpMethod.GET, _baseurl + "statuses/show/{0}.xml".Fmt(id), null);
+
+            var tweet = XmlToTweet(xml.Root);
+            return tweet;
+        }
+
         public void UpdateStatus(string statusMessage)
         {
             string encodedMessage = UrlEx.UrlEncode(statusMessage);
@@ -204,7 +212,7 @@ namespace SocialInsight
         {
             var tweet = new Tweet();
             tweet.Date = DateTime.ParseExact(xml.GetSubElementValue("created_at"), "ddd MMM dd HH:mm:ss zzzz yyyy", CultureEx.Invariant);
-            tweet.Id = xml.GetSubElementValue("id");
+            tweet.Id = long.Parse(xml.GetSubElementValue("id"));
             tweet.Text = xml.GetSubElementValue("text");
             tweet.Source = xml.GetSubElementValue("source");
 
