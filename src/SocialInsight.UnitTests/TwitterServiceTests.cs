@@ -145,5 +145,12 @@ namespace SocialNetworkAPIs.UnitTests
             var tweets = _twitter.Search("Inception");
             Assert.Greater(tweets.Count, 0);
         }
+
+        [Test]
+        public void VerifyLogin()
+        {
+            _twitter.SetAccessToken(_lastAccessToken, _lastAccessTokenSecret);
+            _twitter.VerifyLogin();
+        }
     }
 }

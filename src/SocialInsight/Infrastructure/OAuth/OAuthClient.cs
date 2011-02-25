@@ -117,7 +117,7 @@ namespace SocialInsight
                 method,
                 timeStamp,
                 nonce,
-                SignatureTypes.HMACSHA1,
+                OAuthSignatureTypes.HMACSHA1,
                 RequestType.ApiRequest,
                 out outUrl,
                 parameters,
@@ -245,7 +245,7 @@ namespace SocialInsight
                 method,
                 GenerateTimeStamp(),
                 GenerateNonce(),
-                SignatureTypes.HMACSHA1,
+                OAuthSignatureTypes.HMACSHA1,
                 type,
                 out outUrl,
                 null,
@@ -414,7 +414,7 @@ namespace SocialInsight
 
         private string GenerateSignature(
             Uri url, string consumerKey, string consumerSecret, string token, string tokenSecret,
-            HttpMethod httpMethod, string timeStamp, string nonce, SignatureTypes signatureType, RequestType type,
+            HttpMethod httpMethod, string timeStamp, string nonce, OAuthSignatureTypes signatureType, RequestType type,
             out string normalizedUrl, Dictionary<string, string> additionalParameters, out string normalizedRequestParameters)
         {
             normalizedUrl = null;
@@ -422,14 +422,14 @@ namespace SocialInsight
 
             switch (signatureType)
             {
-                case SignatureTypes.HMACSHA1:
+                case OAuthSignatureTypes.HMACSHA1:
                     string signatureBase = GenerateSignatureBase(
                         url, consumerKey, token, tokenSecret, httpMethod, timeStamp, nonce, HMACSHA1SignatureType, type, out normalizedUrl, additionalParameters, out normalizedRequestParameters);
                     var hmacsha1 = new HMACSHA1();
                     hmacsha1.Key = Encoding.ASCII.GetBytes(string.Format("{0}&{1}", UrlEx.UrlEncode(consumerSecret), string.IsNullOrEmpty(tokenSecret) ? "" : UrlEx.UrlEncode(tokenSecret)));
                     return ComputeHash(hmacsha1, signatureBase);
-                case SignatureTypes.PLAINTEXT:
-                case SignatureTypes.RSASHA1:
+                case OAuthSignatureTypes.PLAINTEXT:
+                case OAuthSignatureTypes.RSASHA1:
                     throw new NotImplementedException();
                 default:
                     throw new ArgumentException("Unknown signature type", signatureType.ToString());
